@@ -2,9 +2,7 @@ import ky from "ky";
 import * as cheerio from "cheerio";
 import * as licia from "licia";
 
-interface IBoxOptions {
-  // 可以在这里添加配置选项
-}
+interface IBoxOptions {}
 
 interface Toast {
   info(message: string): void;
