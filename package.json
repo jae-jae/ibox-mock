@@ -1,0 +1,32 @@
+{
+  "name": "ibox-mock",
+  "version": "1.0.0",
+  "description": "utools ibox script mock",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mock",
+    "ibox",
+    "utools"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.10.3",
+    "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "ky": "^1.7.2",
+    "licia": "^1.46.0"
+  }
+}
