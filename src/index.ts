@@ -2,7 +2,9 @@ import ky from "ky";
 import * as cheerio from "cheerio";
 import * as licia from "licia";
 
-interface IBoxOptions {}
+interface IBoxOptions {
+  push?: (...items: DataItem[]) => void;
+}
 
 interface Toast {
   info(message: string): void;
@@ -55,22 +57,15 @@ class IBox {
     });
   }
 
-  push(items?: DataItem[] | null): void {
-    if (!items || !Array.isArray(items)) {
-      console.log("[IBOX:PUSH] []");
+  push(...items: DataItem[]): void {
+    // 如果用户提供了自定义的 push 处理函数，则使用它
+    if (this.options.push) {
+      this.options.push(...items);
       return;
     }
 
+    // 默认行为
     console.log("[IBOX:PUSH]", JSON.stringify(items, null, 2));
-  }
-
-  done(items?: DataItem[] | null): void {
-    if (!items || !Array.isArray(items)) {
-      console.log("[IBOX:DONE] []");
-      return;
-    }
-
-    console.log("[IBOX:DONE]", JSON.stringify(items, null, 2));
   }
 }
 

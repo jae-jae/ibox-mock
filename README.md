@@ -35,131 +35,75 @@ const $doc = ibox.cheerio.load(html);
 // 使用 licia 工具函数
 const randomStr = ibox.licia.random();
 
-// 推送数据
-ibox.push([
-  {
-    url: "https://example.com/item1",
-    title: "示例1",
-  },
-]); // 输出: [IBOX:PUSH] [{"url": "https://example.com/item1", "title": "示例1"}]
+// 使用默认的 push 实现
+ibox.push(
+  { url: "https://example.com/item1", title: "示例1" },
+  { url: "https://example.com/item2", title: "示例2" }
+);
+// 输出:
+// [IBOX:PUSH] [
+//   { "url": "https://example.com/item1", "title": "示例1" },
+//   { "url": "https://example.com/item2", "title": "示例2" }
+// ]
 
-// 完成数据处理
-ibox.done([
-  {
-    url: "https://example.com/item1",
-    title: "示例1",
-    content: "处理完成的内容",
+// 使用自定义的 push 实现
+const customIBox = IBox({
+  push: (...items) => {
+    // 自定义处理逻辑
+    items.forEach((item) => {
+      console.log(`处理项目：${item.url}`);
+    });
   },
-]); // 输出: [IBOX:DONE] [{"url": "https://example.com/item1", "title": "示例1", "content": "处理完成的内容"}]
+});
 
-// 处理空数据
-ibox.push(); // 输出: [IBOX:PUSH] []
-ibox.done(null); // 输出: [IBOX:DONE] []
+customIBox.push(
+  { url: "https://example.com/item1", title: "示例1" },
+  { url: "https://example.com/item2", title: "示例2" }
+);
+// 输出:
+// 处理项目：https://example.com/item1
+// 处理项目：https://example.com/item2
 ```
 
 ## API
 
-### IBox()
+### IBox(options?: IBoxOptions)
 
 创建一个新的 IBox 实例。
 
-### ibox.push(items?: Array<{ url: string, [key: string]: any }>)
+- `options.push`: 可选的自定义 push 处理函数，接收任意数量的数据项作为参数
+
+### ibox.push(...items: Array<{ url: string, [key: string]: any }>)
 
 推送数据项到处理队列。
 
-- `items`: 包含数据项的数组，每个数据项必须包含 `url` 属性，可以包含其他任意属性
-- 如果 `items` 为 `undefined` 或 `null`，将输出空数组
-- 数组中不包含 `url` 属性的项目会被自动过滤掉
+- `items`: 包含数据项的列表，每个数据项必须包含 `url` 属性，可以包含其他任意属性
+- 如果在创建实例时提供了自定义的 `push` 函数，将使用该函数处理数据项
+- 否则，将以 JSON 格式输出数据项到控制台
 
 示例：
 
 ```javascript
-// 正常使用
-ibox.push([
-  {
-    url: "https://example.com/item1",
-    title: "示例1",
+// 使用默认实现
+ibox.push(
+  { url: "https://example.com/item1", title: "示例1" },
+  { url: "https://example.com/item2", title: "示例2" }
+);
+
+// 使用自定义实现
+const customIBox = IBox({
+  push: (...items) => {
+    items.forEach((item) => {
+      // 自定义处理逻辑
+      console.log(`处理项目：${item.url}`);
+    });
   },
-  {
-    url: "https://example.com/item2",
-    title: "示例2",
-  },
-]);
-// 输出:
-// [IBOX:PUSH] [
-//   {
-//     "url": "https://example.com/item1",
-//     "title": "示例1"
-//   },
-//   {
-//     "url": "https://example.com/item2",
-//     "title": "示例2"
-//   }
-// ]
+});
 
-// 处理空值
-ibox.push(); // 输出: [IBOX:PUSH] []
-ibox.push(null); // 输出: [IBOX:PUSH] []
-
-// 自动过滤无效项
-ibox.push([
-  { url: "https://example.com/valid" },
-  { title: "无效项" }, // 这一项会被过滤掉
-  null, // 这一项会被过滤掉
-]);
-// 输出:
-// [IBOX:PUSH] [
-//   {
-//     "url": "https://example.com/valid"
-//   }
-// ]
-```
-
-### ibox.done(items?: Array<{ url: string, [key: string]: any }>)
-
-标记数据项为已完成状态。
-
-- `items`: 包含数据项的数组，每个数据项必须包含 `url` 属性，可以包含其他任意属性
-- 如果 `items` 为 `undefined` 或 `null`，将输出空数组
-- 数组中不包含 `url` 属性的项目会被自动过滤掉
-
-示例：
-
-```javascript
-// 正常使用
-ibox.done([
-  {
-    url: "https://example.com/item1",
-    title: "示例1",
-    content: "处理完成的内容",
-  },
-]);
-// 输出:
-// [IBOX:DONE] [
-//   {
-//     "url": "https://example.com/item1",
-//     "title": "示例1",
-//     "content": "处理完成的内容"
-//   }
-// ]
-
-// 处理空值
-ibox.done(); // 输出: [IBOX:DONE] []
-ibox.done(null); // 输出: [IBOX:DONE] []
-
-// 自动过滤无效项
-ibox.done([
-  { url: "https://example.com/valid", content: "有效内容" },
-  { content: "无效项" }, // 这一项会被过滤掉
-  null, // 这一项会被过滤掉
-]);
-// 输出:
-// [IBOX:DONE] [
-//   {
-//     "url": "https://example.com/valid",
-//     "content": "有效内容"
-//   }
-// ]
+customIBox.push(
+  { url: "https://example.com/item1", title: "示例1" },
+  { url: "https://example.com/item2", title: "示例2" }
+);
 ```
 
 ### ibox.toast
