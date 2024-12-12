@@ -43,18 +43,9 @@ class IBox {
   }
 
   async loadPage(url: string, options: any = {}): Promise<cheerio.CheerioAPI> {
-    return new Promise((resolve, reject) => {
-      console.log("load url: " + url);
-      ky.get(url, options)
-        .text()
-        .then((html) => {
-          const $ = cheerio.load(html);
-          resolve($);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+    console.log("load url: " + url);
+    const html = await ky.get(url, options).text();
+    return cheerio.load(html);
   }
 
   push(...items: DataItem[]): void {

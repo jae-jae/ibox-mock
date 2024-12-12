@@ -1,6 +1,6 @@
 {
   "name": "ibox-mock",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "utools ibox script mock",
   "type": "module",
   "main": "dist/index.js",
