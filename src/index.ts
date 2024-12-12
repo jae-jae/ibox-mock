@@ -44,7 +44,14 @@ class IBox {
 
   async loadPage(url: string, options: any = {}): Promise<cheerio.CheerioAPI> {
     console.log("load url: " + url);
-    const html = await ky.get(url, options).text();
+    const html = await ky
+      .get(url, {
+        https: {
+          rejectUnauthorized: false,
+        },
+        ...options,
+      })
+      .text();
     return cheerio.load(html);
   }
 
