@@ -2,6 +2,8 @@ import ky from "ky";
 import * as cheerio from "cheerio";
 import * as licia from "licia";
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 interface IBoxOptions {
   push?: (...items: DataItem[]) => void;
 }
